@@ -25,5 +25,12 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(new Intent(MenuActivity.this, MandelbrotActivity.class));
             }
         });
+
+        findViewById(R.id.mandelbrot_button2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuActivity.this, MandelbrotActivity2.class));
+            }
+        });
     }
 }
