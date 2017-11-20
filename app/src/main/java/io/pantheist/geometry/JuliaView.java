@@ -137,19 +137,6 @@ public class JuliaView extends View {
                 paint);
     }
 
-    private CxMut evz(MotionEvent motionEvent, int i)
-    {
-        double scale = 4.0 / getWidth();
-        return CxMut.of(motionEvent.getX(i)*scale-2.0, motionEvent.getY(i)*scale-2.0);
-    }
-
-    private CxMut prz(MotionEvent motionEvent, int i)
-    {
-        double scale = 4.0 / getWidth();
-        int id = motionEvent.getPointerId(i);
-        return CxMut.of(prev_x.get(id)*scale-2.0, prev_y.get(id)*scale-2.0);
-    }
-
     private Coefficients.Coefficient getCoefficient(float x, float y)
     {
         if (x < getWidth() / 2)
@@ -220,33 +207,5 @@ public class JuliaView extends View {
         }
 
         return true;
-    }
-
-    private String translateAction(int action)
-    {
-        if (action == MotionEvent.ACTION_DOWN)
-        {
-            return "DOWN";
-        }
-        else if (action == MotionEvent.ACTION_MOVE)
-        {
-            return "MOVE";
-        }
-        else if (action == MotionEvent.ACTION_UP)
-        {
-            return "UP";
-        }
-        else if (action == MotionEvent.ACTION_POINTER_DOWN)
-        {
-            return "POINTER_DOWN";
-        }
-        else if (action == MotionEvent.ACTION_POINTER_UP)
-        {
-            return "POINTER_UP";
-        }
-        else
-        {
-            return String.valueOf(action);
-        }
     }
 }
