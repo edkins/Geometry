@@ -16,7 +16,7 @@ import java.util.Map;
  * Created by giles on 18/11/17.
  */
 
-public class FractalView extends View {
+public class JuliaView extends View {
     public static final int WIDTH = 96;
     public static final int HEIGHT = 128;
     private static final int MAXITER = 100;
@@ -35,7 +35,7 @@ public class FractalView extends View {
 
     private boolean changed = true;
 
-    public FractalView(Context context, AttributeSet attrs) {
+    public JuliaView(Context context, AttributeSet attrs) {
         super(context,attrs);
 
         this.bitmap = Bitmap.createBitmap(WIDTH, HEIGHT, Bitmap.Config.ARGB_8888);

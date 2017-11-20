@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DrawActivity"
+    tools:context=".MenuActivity"
     >
 
-    <io.pantheist.geometry.FractalView
+    <io.pantheist.geometry.JuliaView
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
