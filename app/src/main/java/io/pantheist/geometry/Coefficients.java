@@ -1,12 +1,17 @@
 package io.pantheist.geometry;
 
 public class Coefficients {
-    public CxMut c0 = CxMut.of(0.3,0.03);
+    public CxMut c0 = CxMut.of(0.25,0.03);
     public CxMut c1 = CxMut.of(0.0,0.0);
     public CxMut c2 = CxMut.of(1.0,0.0);
     public CxMut d0 = CxMut.of(1.0,0.0);
     public CxMut d1 = CxMut.of(0.0,0.0);
     public CxMut d2 = CxMut.of(0.0,0.0);
+
+    public enum Coefficient
+    {
+        C0,C1,C2,D0,D1,D2;
+    }
 
     public void set(Coefficients other)
     {
@@ -46,4 +51,30 @@ public class Coefficients {
         c2.div(d);
     }
 
+    public void change(Coefficient c, double dx, double dy)
+    {
+        System.out.println(String.format("%s: move %.2f %.2f",c,dx,dy));
+        switch(c)
+        {
+            case C0:
+                c0.add_xy(dx,dy);
+                break;
+            case C1:
+                c1.add_xy(dx,dy);
+                break;
+            case C2:
+                c2.add_xy(dx,dy);
+                break;
+            case D0:
+                d0.add_xy(dx,dy);
+                break;
+            case D1:
+                d1.add_xy(dx,dy);
+                break;
+            case D2:
+                d2.add_xy(dx,dy);
+                break;
+
+        }
+    }
 }

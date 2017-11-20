@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Picture;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -20,7 +19,7 @@ import java.util.Map;
 public class FractalView extends View {
     public static final int WIDTH = 96;
     public static final int HEIGHT = 128;
-    private static final int MAXITER = 30;
+    private static final int MAXITER = 100;
     private static final double BAILOUT = 4000.0;
     private final Bitmap bitmap;
     private final Paint paint;
@@ -30,9 +29,9 @@ public class FractalView extends View {
     public Coefficients c = new Coefficients();
     public Coefficients prev_c = new Coefficients();
 
-    private static final int HISTORY_SIZE = 3;
     private Map<Integer,Float> prev_x = new HashMap<>();
     private Map<Integer,Float> prev_y = new HashMap<>();
+    private Map<Integer,Coefficients.Coefficient> prev_coeff = new HashMap<>();
 
     private boolean changed = true;
 
@@ -70,12 +69,6 @@ public class FractalView extends View {
                 int iter = 0;
                 while (iter < MAXITER)
                 {
-                    if (z.abs_squared() > BAILOUT)
-                    {
-                        region = 1;
-                        break;
-                    }
-
                     zz.set(z);
                     zz.mul(z);
 
@@ -94,16 +87,21 @@ public class FractalView extends View {
                     u2.add(c.d0);
 
                     t2.div(u2);
+                    if (z.close_to(t2))
+                    {
+                        region = 1;
+                        break;
+                    }
                     z.set(t2);
                     iter++;
                 }
 
-                int color = 0xff000000;
+                int color = 0xff400000;
                 int br = 64 + (15 * iter) % 192;
                 switch(region)
                 {
                     case 1:
-                        color = 0xff000000 + 0x1 * br;
+                        color = 0xff000000 + 0x10101 * br;
                         break;
                     case 2:
                         color = 0xff000000 + 0x100 * br;
@@ -152,6 +150,40 @@ public class FractalView extends View {
         return CxMut.of(prev_x.get(id)*scale-2.0, prev_y.get(id)*scale-2.0);
     }
 
+    private Coefficients.Coefficient getCoefficient(float x, float y)
+    {
+        if (x < getWidth() / 2)
+        {
+            if (y < getHeight() / 3)
+            {
+                return Coefficients.Coefficient.C0;
+            }
+            else if (y < getHeight() * 2 / 3)
+            {
+                return Coefficients.Coefficient.C1;
+            }
+            else
+            {
+                return Coefficients.Coefficient.C2;
+            }
+        }
+        else
+        {
+            if (y < getHeight() / 3)
+            {
+                return Coefficients.Coefficient.D0;
+            }
+            else if (y < getHeight() * 2 / 3)
+            {
+                return Coefficients.Coefficient.D1;
+            }
+            else
+            {
+                return Coefficients.Coefficient.D2;
+            }
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         if (motionEvent.getActionMasked() == MotionEvent.ACTION_DOWN ||
@@ -161,43 +193,29 @@ public class FractalView extends View {
             prev_c.set(c);
             prev_x.clear();
             prev_y.clear();
-            for (int i = 0; i < Math.min(motionEvent.getPointerCount(),HISTORY_SIZE); i++)
+            prev_coeff.clear();
+            for (int i = 0; i < motionEvent.getPointerCount(); i++)
             {
                 int id = motionEvent.getPointerId(i);
                 prev_x.put(id,motionEvent.getX(i));
                 prev_y.put(id,motionEvent.getY(i));
+                prev_coeff.put(id, getCoefficient(motionEvent.getX(i),motionEvent.getY(i)));
             }
         }
         else if (motionEvent.getActionMasked() == MotionEvent.ACTION_MOVE)
         {
             c.set(prev_c);
-            if (motionEvent.getPointerCount() == 1)
+            double scale = 1.0 / getWidth();
+
+            for (int i = 0; i < motionEvent.getPointerCount(); i++)
             {
-                CxMut z = prz(motionEvent,0);
-                z.sub(evz(motionEvent,0));
-                c.translate(z);
+                int id = motionEvent.getPointerId(i);
+                Coefficients.Coefficient coeff = prev_coeff.get(id);
+                c.change(coeff,
+                        (motionEvent.getX(i)-prev_x.get(id))*scale,
+                        (motionEvent.getY(i)-prev_y.get(id))*scale);
             }
-            else if (motionEvent.getPointerCount() == 2)
-            {
-                CxMut cen0 = prz(motionEvent,0);
-                cen0.add(prz(motionEvent,1));
-                cen0.scale(0.5);
 
-                CxMut cen1 = evz(motionEvent,0);
-                cen1.add(evz(motionEvent,1));
-                cen1.scale(-0.5);
-
-                CxMut dif0 = prz(motionEvent,0);
-                dif0.sub(prz(motionEvent,1));
-
-                CxMut dif1 = evz(motionEvent,0);
-                dif1.sub(evz(motionEvent,1));
-                dif1.div(dif0);
-
-                c.translate(cen0);
-                c.scale(dif1);
-                c.translate(cen1);
-            }
             inval();
         }
 

@@ -99,4 +99,10 @@ public final class CxMut {
         a += aa;
         b += bb;
     }
+
+    public boolean close_to(CxMut other)
+    {
+        if (abs_squared() > 4000 && other.abs_squared() > 4000) return true;
+        return distance_squared(other) < 0.00025;
+    }
 }
