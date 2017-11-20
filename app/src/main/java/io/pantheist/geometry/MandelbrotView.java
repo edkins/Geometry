@@ -111,8 +111,8 @@ public class MandelbrotView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         if (motionEvent.getActionMasked() == MotionEvent.ACTION_MOVE) {
+            double scale1 = (double)WIDTH / (double)getWidth();
             if (motionEvent.getPointerCount() == 1) {
-                double scale1 = (double)WIDTH / (double)getWidth();
                 double dx = (motionEvent.getX(0) - prev_x.get(motionEvent.getPointerId(0))) * scale1;
                 double dy = (motionEvent.getY(0) - prev_y.get(motionEvent.getPointerId(0))) * scale1;
 
@@ -129,8 +129,27 @@ public class MandelbrotView extends View {
                         motionEvent.getX(0) - motionEvent.getX(1),
                         motionEvent.getY(0) - motionEvent.getY(1));
 
-                scale *= Math.pow(d1 / d2, 3);
+                double cx1 = 0.5 * (prev_x.get(id0) + prev_x.get(id1)) * scale1 - 0.5*WIDTH;
+                double cy1 = 0.5 * (prev_y.get(id0) + prev_y.get(id1)) * scale1 - 0.5*HEIGHT;
+
+                double cx2 = 0.5 * (motionEvent.getX(0) + motionEvent.getX(1)) * scale1 - 0.5*WIDTH;
+                double cy2 = 0.5 * (motionEvent.getY(0) + motionEvent.getY(1)) * scale1 - 0.5*HEIGHT;
+
+                double sf = Math.pow(d1 / d2, 5);
+
+                //cenx -= cx1 * scale * (sf-1);
+                //ceny -= cy1 * scale * (sf-1);
+                cenx -= cx2 * scale * (sf+3) - 4 * cx1 * scale;
+                ceny -= cy2 * scale * (sf+3) - 4 * cy1 * scale;
+
+                scale *= sf;
             }
+
+            if (cenx < -2) cenx = -2;
+            if (cenx > 2) cenx = 2;
+            if (ceny < -2) ceny = -2;
+            if (ceny > 2) ceny = 2;
+            if (scale > 8.0/WIDTH) scale = 8.0/WIDTH;
 
             inval();
         }
