@@ -2,6 +2,7 @@ package io.pantheist.geometry;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
@@ -44,14 +45,18 @@ public class Sampler {
     }
 
     public void draw(Canvas c) {
-        Rect dstRect = new Rect(0,0,c.getWidth(), c.getHeight());
-        Rect srcRect = new Rect((int)x0,(int)y0,(int)x1,(int)y1);
         Paint paint = new Paint();
 
-        c.drawBitmap(bitmap,
-                srcRect,
-                dstRect,
-                paint);
+        Matrix matrix = new Matrix();
+        float a = (float)(c.getWidth()/(x1-x0));
+        float b = (float)(c.getHeight()/(y1-y0));
+        matrix.setValues(new float[]{
+                a, 0.0f, -(float)x0 * a,
+                0.0f, b, -(float)y0 * b,
+                0.0f, 0.0f, 1.0f
+        });
+
+        c.drawBitmap(bitmap, matrix, paint);
     }
 
     private static class Result
@@ -182,5 +187,13 @@ public class Sampler {
         else {
             return 0xff400000;
         }
+    }
+
+    public void set_viewport(double x0, double y0, double x1, double y1)
+    {
+        this.x0 = (x0 - cx0) / cx_scale;
+        this.y0 = (y0 - cy0) / cy_scale;
+        this.x1 = (x1 - cx0) / cx_scale;
+        this.y1 = (y1 - cy0) / cy_scale;
     }
 }
