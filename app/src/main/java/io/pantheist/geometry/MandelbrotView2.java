@@ -20,17 +20,20 @@ public class MandelbrotView2 extends View {
     private Map<Integer,Float> prev_x = new HashMap<>();
     private Map<Integer,Float> prev_y = new HashMap<>();
 
-    private boolean changed = true;
+    private boolean initialized = false;
 
     public MandelbrotView2(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-
-        sampler.init();
     }
 
     @Override
     protected void onDraw(Canvas c)
     {
+        if (!initialized)
+        {
+            inval();
+            initialized = true;
+        }
         sampler.draw(c);
         if (sampler.improve())
         {
