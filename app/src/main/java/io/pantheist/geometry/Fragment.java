@@ -13,16 +13,17 @@ public class Fragment {
     private boolean in_use = false;
     private Bitmap bitmap = Bitmap.createBitmap(SIZE, SIZE, Bitmap.Config.ARGB_8888);
 
-    private static final int MAXITER = 100;
+    private int max_iter;
     private static final double BAILOUT = 4000.0;
 
-    public Fragment(double x0, double y0, double size)
+    public Fragment(double x0, double y0, double size, int max_iter)
     {
         this.x0 = x0;
         this.y0 = y0;
         this.scale = size / SIZE;
         this.progress = 0;
         this.in_use = true;
+        this.max_iter = max_iter;
     }
 
     public void abandon()
@@ -87,7 +88,7 @@ public class Fragment {
 
         int region = 0;
         int iter = 0;
-        while (iter < MAXITER) {
+        while (iter < max_iter) {
             double xx = zx * zx;
             double yy = zy * zy;
             if (xx + yy > BAILOUT) {

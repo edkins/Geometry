@@ -13,10 +13,22 @@ public class FragmentGrid {
     private long x1 = 0;
     private long y1 = 0;
     private List<Fragment> fragments;
+    private int max_iter;
 
-    public FragmentGrid(double size)
+    public FragmentGrid(double size, int max_iter)
     {
         this.size = size;
+        this.max_iter = max_iter;
+    }
+
+    public double size()
+    {
+        return size;
+    }
+
+    public int tile_count()
+    {
+        return (int)((x1-x0)*(y1-y0));
     }
 
     public void set_viewport(double vx0, double vy0, double vx1, double vy1)
@@ -44,7 +56,7 @@ public class FragmentGrid {
                 }
                 else
                 {
-                    new_fragments.add(new Fragment(x, y, size));
+                    new_fragments.add(new Fragment(x * size, y * size, size, max_iter));
                 }
             }
         }
