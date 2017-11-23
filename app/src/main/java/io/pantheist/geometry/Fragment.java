@@ -16,7 +16,7 @@ public class Fragment {
     private static final int MAXITER = 100;
     private static final double BAILOUT = 4000.0;
 
-    public void init(double x0, double y0, double size)
+    public Fragment(double x0, double y0, double size)
     {
         this.x0 = x0;
         this.y0 = y0;
@@ -115,13 +115,14 @@ public class Fragment {
     }
 
     public void draw(Canvas c, Matrix matrix) {
-        Matrix m2 = new Matrix();
+        if (complete()) {
+            Matrix m2 = new Matrix();
 
-        m2.set(matrix);
-        m2.preTranslate((float)x0, (float)y0);
-        m2.preScale((float)scale, (float)scale);
+            m2.set(matrix);
+            m2.preTranslate((float) x0, (float) y0);
+            m2.preScale((float) scale, (float) scale);
 
-        c.drawBitmap(bitmap, m2, null);
-
+            c.drawBitmap(bitmap, m2, null);
+        }
     }
 }
