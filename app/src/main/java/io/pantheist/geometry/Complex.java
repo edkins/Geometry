@@ -6,7 +6,7 @@ import java.util.Objects;
  * Created by giles on 12/08/17.
  */
 
-public final class Complex {
+public final class Complex implements IComplex {
     private final double a;
     private final double b;
 
@@ -14,6 +14,15 @@ public final class Complex {
     {
         this.a = a;
         this.b = b;
+    }
+
+    public double x()
+    {
+        return a;
+    }
+    public double y()
+    {
+        return b;
     }
 
     public static Complex of(double a, double b)
@@ -40,9 +49,9 @@ public final class Complex {
         return new Complex(a + other.a, b + other.b);
     }
 
-    public Complex sub(Complex other)
+    public Complex sub(IComplex other)
     {
-        return new Complex(a - other.a, b - other.b);
+        return new Complex(a - other.x(), b - other.y());
     }
 
     public Complex scale(double x)
@@ -79,6 +88,34 @@ public final class Complex {
     public double manhattan()
     {
         return Math.abs(a) + Math.abs(b);
+    }
+
+    public Complex sqrt()
+    {
+        double root_half = Math.sqrt(0.5);
+        double r = Math.sqrt(abs_squared());
+        double signb = Math.signum(b);
+
+        return Complex.of(
+                root_half * Math.sqrt(r + a),
+                root_half * signb * Math.sqrt(r - a)
+        );
+
+    }
+
+    public Complex squared()
+    {
+        return mul(this);
+    }
+
+    public static Complex solve_quadratic(Complex a, Complex b, Complex c)
+    {
+        return b.squared().sub(a.mul(c).scale(4)).sqrt().sub(b).div(a).scale(0.5);
+    }
+
+    public static Complex solve_quadratic2(Complex a, Complex b, Complex c)
+    {
+        return b.squared().sub(a.mul(c).scale(4)).sqrt().neg().sub(b).div(a).scale(0.5);
     }
 
     @Override

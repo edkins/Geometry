@@ -2,7 +2,7 @@ package io.pantheist.geometry;
 
 import java.util.Objects;
 
-public final class CxMut {
+public final class CxMut implements IComplex {
     private double a;
     private double b;
 
@@ -10,6 +10,22 @@ public final class CxMut {
     {
         this.a = a;
         this.b = b;
+    }
+
+    @Override
+    public double x()
+    {
+        return a;
+    }
+    @Override
+    public double y()
+    {
+        return b;
+    }
+
+    public Complex cx()
+    {
+        return Complex.of(a,b);
     }
 
     public static CxMut of(double a, double b)
@@ -24,9 +40,9 @@ public final class CxMut {
         return a * a + b * b;
     }
 
-    public double distance_squared(CxMut other)
+    public double distance_squared(IComplex other)
     {
-        return (a - other.a) * (a - other.a) + (b - other.b) * (b - other.b);
+        return (a - other.x()) * (a - other.x()) + (b - other.y()) * (b - other.y());
     }
 
     public void set(CxMut other)

@@ -21,6 +21,7 @@ public class JuliaView2 extends View {
     public static final int HEIGHT = 128;
     private static final int MAXITER = 100;
     private static final double BAILOUT = 4000.0;
+    private static final double BAILIN = 1/BAILOUT;
     private final Bitmap bitmap;
     private final Paint paint;
     private final Rect srcRect;
@@ -54,6 +55,9 @@ public class JuliaView2 extends View {
 
         CxMut z = CxMut.of(0,0);
 
+        Complex point_a = Complex.solve_quadratic(Complex.one.sub(c.d0), Complex.one.neg(), c.c0.cx());
+        Complex point_b = Complex.solve_quadratic2(Complex.one.sub(c.d0), Complex.one.neg(), c.c0.cx());
+
         double scale = 8.0 / WIDTH;
         for (int y = 0; y < HEIGHT; y++)
         {
@@ -78,9 +82,19 @@ public class JuliaView2 extends View {
                     u2.add_xy(1.0,0.0);
 
                     t2.div(u2);
-                    if (z.close_to(t2))
+                    if (z.abs_squared() > BAILOUT)
                     {
                         region = 1;
+                        break;
+                    }
+                    else if (z.distance_squared(point_a) < BAILIN)
+                    {
+                        region = 2;
+                        break;
+                    }
+                    else if (z.distance_squared(point_b) < BAILIN)
+                    {
+                        region = 3;
                         break;
                     }
                     z.set(t2);
