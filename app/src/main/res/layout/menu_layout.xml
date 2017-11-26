@@ -8,8 +8,13 @@
         android:id="@+id/julia_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="adfsadf"
         android:text="Julia set" />
+
+    <Button
+        android:id="@+id/julia_button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Julia set 2" />
 
     <Button
         android:id="@+id/mandelbrot_button"

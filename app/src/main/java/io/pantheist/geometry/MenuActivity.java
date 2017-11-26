@@ -19,6 +19,13 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.julia_button2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuActivity.this, JuliaActivity2.class));
+            }
+        });
+
         findViewById(R.id.mandelbrot_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
